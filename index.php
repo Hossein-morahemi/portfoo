@@ -1,0 +1,185 @@
+<?php
+session_start();
+if(!isset($_SESSION['user_id'])){
+    header("Location: index.php");
+    exit();
+}
+
+$conn = new mysqli("localhost","root","","mywebsite_db");
+if($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+
+$stmt = $conn->prepare("SELECT name,email FROM users WHERE id=?");
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+?>
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد | MYWEBSITE</title>
+<link rel="stylesheet" href="/mainpage.css">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">MYWEBSITE</div>
+    <div class="nav-links">
+        <a href="#">خانه</a>
+        <a href="#portfolio">نمونه کارها</a>
+        <a href="#contact">تماس با ما</a>
+        <a href="index.php" class="logout-btn">خروج</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>سلام <?php echo htmlspecialchars($user['name']); ?> 👋</h1>
+        <p>به دنیای دیجیتال خوش اومدی — اینجا جاییه که پروژه‌ها متولد میشن 🚀</p>
+        <a href="#portfolio" class="hero-btn">مشاهده نمونه کارها</a>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <h2 data-target="120">0</h2>
+        <p>پروژه موفق</p>
+    </div>
+    <div class="stat">
+        <h2 data-target="85">0</h2>
+        <p>مشتری راضی</p>
+    </div>
+    <div class="stat">
+        <h2 data-target="5">0</h2>
+        <p>سال تجربه</p>
+    </div>
+</section>
+
+<section class="services">
+    <h2>خدمات ما</h2>
+    <div class="service-box">
+        <div class="card">
+            <h3>طراحی سایت</h3>
+            <p>طراحی مدرن، ریسپانسیو و سئو محور</p>
+        </div>
+        <div class="card">
+            <h3>برنامه نویسی اختصاصی</h3>
+            <p>سیستم‌های مدیریتی و پنل ادمین حرفه‌ای</p>
+        </div>
+        <div class="card">
+            <h3>سئو و بهینه سازی</h3>
+            <p>افزایش رتبه در گوگل و رشد کسب‌وکار</p>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="portfolio-section" id="portfolio">
+    <h2>نمونه کارها</h2>
+
+    <div class="portfolio">
+
+        <div class="item">
+            <img src="/4.jpeg" alt="">
+            <div class="overlay">
+                <h3>پروژه فروشگاهی</h3>
+                <p>طراحی فروشگاه اینترنتی حرفه‌ای با PHP</p>
+                <a href="#" target="_blank">مشاهده سایت</a>
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="/5.jpeg" alt="">
+            <div class="overlay">
+                <h3>وب سایت شرکتی</h3>
+                <p>طراحی مدرن و ریسپانسیو</p>
+                <a href="#" target="_blank">مشاهده سایت</a>
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="/3.jpeg" alt="">
+            <div class="overlay">
+                <h3>سیستم مدیریت</h3>
+                <p>پنل ادمین و مدیریت کاربران</p>
+                <a href="#" target="_blank">مشاهده سایت</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+<section class="contact" id="contact">
+    <h2>تماس با ما</h2>
+    <p class="contact-sub">
+        برای ثبت سفارش یا مشاوره رایگان فرم زیر رو پر کن یا مستقیم پیام بده 👇
+    </p>
+
+    <div class="contact-container">
+
+        <!-- فرم تماس -->
+       <form class="contact-form" action="contact.php" method="POST">
+    <input type="text" name="name" placeholder="نام شما" dir="rtl" required>
+    <input type="tel" name="phone" placeholder="شماره تماس" dir="rtl" required>
+    <textarea name="message" placeholder="توضیح پروژه شما..." rows="5"  dir="rtl" required></textarea>
+    <button type="submit">ارسال درخواست</button>
+</form>
+
+        <!-- اطلاعات تماس -->
+        <div class="contact-info">
+            <h3>ارتباط سریع</h3>
+
+            <a href="tel:09191572943" class="contact-btn phone">
+                📞 تماس مستقیم: 09191572943
+            </a>
+
+            <a href="https://wa.me/989191572943" target="_blank" class="contact-btn whatsapp">
+                💬 واتساپ
+            </a>
+
+            <a href="https://t.me/Devho33ein" target="_blank" class="contact-btn telegram">
+                ✈ تلگرام
+            </a>
+
+            <a href="https://www.instagram.com/hossein_morahemi" target="_blank" class="contact-btn instagram">
+                📸 اینستاگرام
+            </a>
+
+        </div>
+
+    </div>
+</section>
+<footer>
+    <p>© 2026 Hossein Morahemi | طراحی شده با ❤️</p>
+</footer>
+
+<script>
+const counters = document.querySelectorAll('[data-target]');
+counters.forEach(counter => {
+    const update = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const increment = target / 200;
+
+        if(count < target){
+            counter.innerText = Math.ceil(count + increment);
+            setTimeout(update, 20);
+        } else {
+            counter.innerText = target;
+        }
+    }
+    update();
+});
+</script>
+<a href="https://wa.me/989191572943" 
+   class="floating-whatsapp" 
+   target="_blank">
+   💬
+</a>
+</body>
+</html>
