@@ -1,19 +1,4 @@
-<?php
-session_start();
-if(!isset($_SESSION['user_id'])){
-    header("Location: index.php");
-    exit();
-}
 
-$conn = new mysqli("localhost","root","","mywebsite_db");
-if($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-
-$stmt = $conn->prepare("SELECT name,email FROM users WHERE id=?");
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-?>
 
 <!DOCTYPE html>
 <html lang="fa">
